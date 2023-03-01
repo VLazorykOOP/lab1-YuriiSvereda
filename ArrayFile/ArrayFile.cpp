@@ -6,6 +6,7 @@
 
 #include <time.h>
 
+
 using namespace std;
 const int MAX_SIZE = 560;
 
