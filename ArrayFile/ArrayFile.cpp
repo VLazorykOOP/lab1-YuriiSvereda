@@ -1,6 +1,4 @@
-﻿ // ArrayFile.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
-//
-
+﻿
 #include <iostream>
 #include <fstream>
 #include <ios>
@@ -9,15 +7,16 @@
 #include <time.h>
 
 using namespace std;
+const int MAX_SIZE = 560;
 
 typedef double* pDouble;
 /*
 *   ConsoleInputArrayDouble
-*   
+*
 */
 int ConsoleInputSizeArray(const int sizeMax)
 {
-    int size = 0; 
+    int size = 0;
     do {
         cout << " Input size Array ( 0< 1 < " << sizeMax << " ) ";
         cin >> size;
@@ -31,7 +30,7 @@ int ConsoleInputSizeArray(const int sizeMax)
 int ConsoleInputArray(int sizeMax, double A[])
 {
     int size = ConsoleInputSizeArray(sizeMax);
-        for (int i = 0; i < size; i++) {
+    for (int i = 0; i < size; i++) {
         cout << " Array[ " << i << "] "; cin >> A[i];
     }
     return size;
@@ -44,7 +43,7 @@ int ConsoleInputArray(int sizeMax, double A[])
 int RndInputArray(int sizeMax, double A[])
 {
     int size = ConsoleInputSizeArray(sizeMax);
-    int r1=0, r2=0;
+    int r1 = 0, r2 = 0;
     srand(size);
 
     for (int i = 0; i < size; i++) {
@@ -57,7 +56,7 @@ int RndInputArray(int sizeMax, double A[])
     return size;
 }
 
-int ConsoleInputDynamicArrayNew(int sizeMax, pDouble &pA)
+int ConsoleInputDynamicArrayNew(int sizeMax, pDouble& pA)
 {
     int size = ConsoleInputSizeArray(sizeMax);
     pA = new double[size];
@@ -79,23 +78,23 @@ int ConsoleInputDynamicArray_calloc(int sizeMax, pDouble& pA)
     return size;
 }
 
-void ConsoleInputVector(int sizeMax, vector<double> &A)
+void ConsoleInputVector(int sizeMax, vector<double>& A)
 {
     int size = ConsoleInputSizeArray(sizeMax);
     double d;
     for (int i = 0; i < size; i++) {
         cout << " Array[ " << i << "] "; cin >> d; A.push_back(d);
     }
-    return ;
+    return;
 }
 
 
 /*
-*  WriteArrayTextFile 
+*  WriteArrayTextFile
 *
 */
 
-void WriteArrayTextFile(int n, double *arr, const char *fileName )
+void WriteArrayTextFile(int n, double* arr, const char* fileName)
 {
     ofstream fout(fileName);
     if (fout.fail()) return;
@@ -117,12 +116,18 @@ int ReadArrayTextFile(int n, double* arr, const char* fileName)
     if (fin.fail()) return 0;
     fin >> size;
     if (size <= 0) return 0;
-    if (size > n) size = n;   
-    for (int i = 0; i < n; i++)
-       fin>> arr[i];
+    if (size > n)
+    {
+        size = n;
+    }
+    double d;
+    for (int i = 0; i < size; i++)
+    {
+        fin >> d;
+        arr[i] = d;
+    }
     fin.close();
     return size;
-    
 }
 
 
@@ -132,14 +137,14 @@ void WriteArrayBinFile(int n, double* arr, const char* fileName)
     ofstream bfout(fileName, ios_base::binary);
     if (bfout.fail()) return;
     bfout.write((const char*)&n, sizeof(int));
-    std::streamsize  cn = static_cast<std::streamsize>(n) *sizeof(double);
+    std::streamsize  cn = static_cast<std::streamsize>(n) * sizeof(double);
     bfout.write((const char*)arr, cn);
     bfout.close();
 }
 
 int ReadArrayBinFile(int n, double* arr, const char* fileName)
 {
-    int size=0;
+    int size = 0;
     ifstream bfin(fileName, ios_base::binary);
     if (bfin.fail()) return 0;
     bfin.read((char*)&size, sizeof(int));
@@ -151,139 +156,231 @@ int ReadArrayBinFile(int n, double* arr, const char* fileName)
     return size;
 }
 
+void WriteResultBinFile(double result, const char* fileName)
+{
+    //ios_base
+    ofstream bfout(fileName, ios_base::binary);
+    if (bfout.fail()) return;
+    bfout.write((const char*)&result, sizeof(double));
+    bfout.close();
+}
+void WriteResultTextFile(double result, const char* fileName)
+{
+    ofstream fout(fileName);
+    if (!fout.is_open()) return;
+    if (fout.fail()) return;
+    fout << result;
+    fout.close(); //
+}
+
 void ShowMainMenu()
 {
     cout << "    Main Menu  \n";
     cout << "    1.  Task 1  \n";
     cout << "    2.  Task 2  \n";
     cout << "    3.  Task 3  \n";
-  }
-
-void MenuTask()
-{
-    cout << "     Menu Task   \n";
-    cout << "    1.  Local array  \n";
-    cout << "    2.  Dynamic array 1 \n";
-    cout << "    3.  Dynamic array 2  new \n"; 
-    cout << "    4.  Dynamic array : vector \n";
-    cout << "    5.  Exit \n";
-}
-
-void MenuInput()
-{
-    cout << "     Menu Input   \n";
-    cout << "    1.  Console all \n";
-    cout << "    2.  Console - size, array - random \n";
-    cout << "    3.  File 1.txt \n";
-    cout << "    4.  bb    \n";
-    cout << "    5.  Exit \n";
 }
 
 
-/*
-* Задано одновимірний масив А розміру 2N. 
-* Побудувати два масиви В і С розміру N, 
-* включивши  у масив В елементи масиву А з парними індексами,
-* а у С - з непарними.
-*****************
-*  A - in 
-*  B, C - out 
-*/
-void  TestVariant(int N, double* A, double* B, double* C) {
-    for (int i = 0; i < N; i++) {
-        B[i] = A[2 * i];
-        C[i] = A[2 * i + 1];
-    }
-}
-/*
-*  Task  Var
-* 
-* 
-*/
-void TaskV()
+void Task1()
 {
-    char ch = '5';
-    do {
-        system("cls");
-        MenuTask();
-        ch = getchar();
-        getchar();
-            switch (ch) {
-             case '1': cout << " 1 "; break;
-             case '2': cout << " 2 "; break;
-            //
-            case '5': return;
-            }
-        cout << " Press any key and enter\n";
-        ch = getchar();
-        } while (ch != 27);
-    
-}
-
-void ArrayLocal()
-{
-    double A[1000], B[500], C[500];
-    int n;
-    char ch = '5';
-    do {
-        system("cls");
-        MenuTask();
-        ch = getchar();
-        getchar();
-        switch (ch) {
-        case '1': cout << " 1 "; break;
-        case '2': cout << " 2 "; break;
-            //
-        case '5': return;
+    double* a, * b, * c; //pointers for dynamic arrays
+    int m, n, size; // sizes of arrays 
+    int c_index = 0; // counter for index of array C
+    //input dynamic arrays
+    cout << "Arrey A:" << endl;
+    n = ConsoleInputDynamicArrayNew(MAX_SIZE, a);
+    cout << "Arrey B:" << endl;
+    m = ConsoleInputDynamicArrayNew(MAX_SIZE, b);
+    size = n + m;
+    c = new double[size];
+    //sorting array elements
+    for (int i = 0; i < n; i++) {
+        if (a[i] > 0) {
+            c[c_index] = a[i];
+            c_index++;
         }
-        cout << " Press any key and enter\n";
-        ch = getchar();
-    } while (ch != 27);
+    }
 
+    for (int i = 0; i < m; i++) {
+        if (b[i] > 0) {
+            c[c_index] = b[i];
+            c_index++;
+        }
+    }
+
+    for (int i = 0; i < n; i++) {
+        if (a[i] < 0) {
+            c[c_index] = a[i];
+            c_index++;
+        }
+    }
+
+    for (int i = 0; i < m; i++) {
+        if (b[i] < 0) {
+            c[c_index] = b[i];
+            c_index++;
+        }
+    }
+    //-----------output------------------------------
+    WriteArrayTextFile(size, c, "Task1Result.txt");
+    WriteArrayBinFile(size, c, "Task1Result.bin");
+    cout << "Array C:" << endl;
+    for (int i = 0; i < size; i++)
+        cout << "C[" << i << "] = " << c[i] << "\t";
+
+    delete[]a;
+    delete[]b;
+    delete[]c;
+    return;
 }
+
+void Task2()
+{
+    int n = 0, i = 0, ak, bk;
+    double* a;
+    int first_positive_index, max;
+    double first_max_index;
+    a = new double[MAX_SIZE];
+    ReadArrayTextFile(n, a, "forRead.txt");
+    if (n == 0)
+    {
+        ReadArrayBinFile(n, a, "forRead.bin");   //if the file is not read, the input will be performed manually
+        if (n == 0)
+        {
+            cout << "Input N:" << endl;
+            cin >> n;
+            a = new double[n];
+            cout << "Input arr A:" << endl;
+            for (i = 0; i < n; i++) {
+                cout << "A[" << i << "]: ";
+                cin >> *(a + i);
+            }
+        }
+    }
+
+    cout << "Input ak:" << endl;
+    cin >> ak;
+    cout << "Input bk:" << endl;
+    cin >> bk;
+    //looking for first positive element
+    for (i = 0; i < n; i++) {
+        if (*(a + i) > 0) {
+            first_positive_index = i;
+            break;
+        }
+    }
+    //looking for first max when first positive is to the left of the range 
+    if (ak > first_positive_index) {
+        max = a[ak];
+        for (i = ak; i <= bk; i++) {
+            if (*(a + i) > max) {
+                max = *(a + i);
+                first_max_index = i;
+            }
+        }
+        WriteResultTextFile(first_max_index, "Task2Result.txt");
+        WriteResultBinFile(first_max_index, "Task2Result.bin");
+        cout << "index of the first maximal element: " << first_max_index;
+    }
+    //looking for first max when first positive in the range 
+    else if (ak <= first_positive_index && bk > first_positive_index) {
+        max = a[first_positive_index + 1];
+        for (i = first_positive_index + 1; i <= bk; i++) {
+            if (*(a + i) > max) {
+                max = *(a + i);
+                first_max_index = i;
+            }
+        }
+        WriteResultTextFile(first_max_index, "Task2Result.txt");
+        WriteResultBinFile(first_max_index, "Task2Result.bin");
+        cout << "index of the first maximal element: " << first_max_index;
+    }
+    else
+        cout << "there is no way:(" << endl;
+
+    delete[]a;
+
+    return;
+}
+
+void Task3()
+{
+    int n, k;
+    double  a[200], b[200];
+    char sign_of_choice;
+    cout << "if you want random input array press r, else just press random letter: ";
+    cin >> sign_of_choice;
+    if (sign_of_choice == 'r') {
+        n = RndInputArray(MAX_SIZE, a);
+        WriteArrayTextFile(200, a, "Task3WriteFile.txt");
+        WriteArrayBinFile(200, a, "Task3WriteFile.bin");
+    }
+    else {
+        cout << "Input arr A:" << endl;
+        n = ConsoleInputArray(MAX_SIZE, a);
+    }
+    cout << endl;
+    cout << "Input k: ";
+    cin >> k;
+    /*pin k values from the end of array
+    to shift it on the start,
+    after all elements, except the first k, are shifted */
+    for (int i = 0; i < k; i++) {
+        b[i] = a[i + n - k];
+    }
+    //shift all elements, except the first ones, by k values right
+    for (int i = n; i > 0; i--) {
+        if (i - k >= 0) {
+            a[i] = a[i - k];
+        }
+    }
+    //put values from the end to start
+    for (int i = 0; i < k; i++) {
+        a[i] = b[i];
+    }
+    //output
+    WriteArrayTextFile(200, a, "Task3Result.txt");
+    WriteArrayBinFile(200, a, "Task3Result.bin");
+    for (int i = 0; i < n; i++) cout << a[i] << '\t';
+    return;
+}
+
+
 
 
 int main()
-{ 
-    
-    
-    
-    const int MAX_SIZE = 560;
-    std::cout << "Hello World!\n";
+{
+
+
+
+
     ShowMainMenu();
-    /*
-    double A[MAX_SIZE], B[MAX_SIZE],C[MAX_SIZE];
-    int n,m;
-    n = RndInputArray(MAX_SIZE, A);
-    WriteArrayTextFile(n, A, "1.txt");
-    m = ReadArrayTextFile(MAX_SIZE, B, "1.txt");
-    cout << " \n m= " << m << endl;
-    for (int i = 0; i < m; i++)
-        cout << B[i] << "   ";
-    WriteArrayBinFile(n, A, "1.bin");
-    m = ReadArrayBinFile(MAX_SIZE, C, "1.bin");
-    cout << " \n m= " << m << endl;
-    for (int i = 0; i < m; i++)
-        cout << C[i] << "   ";
-    cout << "\n  Vector \n";
-    vector<double> vA;
-    ConsoleInputVector(MAX_SIZE, vA);
-    for (auto v : vA) {
-        cout << v << "   ";
+    int v;
+    do {
+        cin >> v;
+    } while (v < 1 || v>3);
+    system("CLS");
+    switch (v)
+    {
+    case 1:
+    {
+        Task1();
     }
-*/
-    TaskV();
+    break;
+    case 2:
+    {
+        Task2();
+    }
+    break;
+    case 3:
+    {
+        Task3();
+    }
+    break;
+    default:
+        break;
+    }
     return 1;
 
 }
-
-// Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
-// Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
-
-// Советы по началу работы 
-//   1. В окне обозревателя решений можно добавлять файлы и управлять ими.
-//   2. В окне Team Explorer можно подключиться к системе управления версиями.
-//   3. В окне "Выходные данные" можно просматривать выходные данные сборки и другие сообщения.
-//   4. В окне "Список ошибок" можно просматривать ошибки.
-//   5. Последовательно выберите пункты меню "Проект" > "Добавить новый элемент", чтобы создать файлы кода, или "Проект" > "Добавить существующий элемент", чтобы добавить в проект существующие файлы кода.
-//   6. Чтобы снова открыть этот проект позже, выберите пункты меню "Файл" > "Открыть" > "Проект" и выберите SLN-файл.
